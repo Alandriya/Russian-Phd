@@ -64,7 +64,9 @@
 \ifxetexorluatex
     \ifpresentation
         \providecommand*\autodot{} % quick fix for polyglossia 1.50
-    \fi
+    \fi\usepackage{mathtools}
+    \usepackage{amssymb}
+    \usepackage{amsthm}
     \PassOptionsToPackage{no-math}{fontspec}    % https://tex.stackexchange.com/a/26295/104425
     \usepackage{polyglossia}[2014/05/21]        % Поддержка многоязычности
                                         % (fontspec подгружается автоматически)

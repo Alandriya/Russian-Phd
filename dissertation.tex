@@ -48,7 +48,12 @@
 %\includeonly{Dissertation/contents,Dissertation/appendix,Dissertation/conclusion}
 %
 % Если все команды закомментированы, то документ будет выведен в PDF файл полностью
-
+\newcommand*{\R}{\mathbb R}
+\newcommand*{\E}{\mathbb E}
+\newcommand*{\D}{\mathbb D}
+\newcommand*{\N}{\mathbb N}
+\renewcommand*{\P}{\mathbb P}
+ 
 \begin{document}
 %%% Переопределение именований типовых разделов
 % https://tex.stackexchange.com/a/156050
@@ -90,3 +95,7 @@
 \setcounter{totalappendix}{\value{chapter}} % Подсчёт количества приложений
 
 \end{document}
+
+%1. Модель СДУ Ито как мат модель пространственно-временных рядов
+%2. Численные методы 
+%3. Программный комплекс
