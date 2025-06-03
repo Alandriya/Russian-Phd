@@ -53,6 +53,13 @@
 \newcommand*{\D}{\mathbb D}
 \newcommand*{\N}{\mathbb N}
 \renewcommand*{\P}{\mathbb P}
+
+\floatname{algorithm}{Алгоритм}
+%Определение для комментариев во всю строку
+\algnewcommand{\LongComment}[1]{//~#1}
+%Определение для комментариев после строки
+\algrenewcommand{\algorithmiccomment}[1]{\hfill//~#1}
+\DeclareMathOperator*{\argmin}{arg\,min}
  
 \begin{document}
 %%% Переопределение именований типовых разделов
@@ -79,7 +86,7 @@
 \include{Dissertation/acronyms}        % Список сокращений и условных обозначений
 \include{Dissertation/dictionary}      % Словарь терминов
 \include{Dissertation/references}      % Список литературы
-\include{Dissertation/lists}           % Списки таблиц и изображений (иллюстративный материал)
+%\include{Dissertation/lists}           % Списки таблиц и изображений (иллюстративный материал)
 
 \setcounter{totalchapter}{\value{chapter}} % Подсчёт количества глав
 

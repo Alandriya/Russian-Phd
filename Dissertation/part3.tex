@@ -27,6 +27,54 @@ TODO блок-схема полупараметрического
 
 \subsection{Выделение компонент связности}
 \label{sec:ComponentsAlgo}
+\begin{algorithm}[!h]
+	\caption{Динамическое определение числа локальных компонент}
+	\label{AlgGreedy}
+	\begin{algorithmic}[1]
+		\Function{NumGreedy}{Params, $ I^{(n)}$, $J^{(n+1)}$}
+		\State  $I_0\gets \emptyset$, $J_0\gets \emptyset$, Comps$\gets \emptyset$;\Comment{{\em Инициализация}}
+		\Repeat \Comment{{\em Продолжающиеся или новые компоненты}}
+		\State \LongComment{{\em Оптимизация выражения~\eqref{I} с учетом условия~\eqref{Dist}}}
+		\State [I, J]$\gets$\Call{FindI}{Params, $J^{(n+1)}\setminus J_0$, $I^{(n)}\setminus I_0$};
+		\If{I $\neq \emptyset$}\Comment{{\em Найдена предшествующая $J$ компонента}}	
+		\State $I_0\gets I_0\cup I$, $J_0\gets J_0\cup J$;
+		\Else\Comment{{\em Добавление новой компоненты}}
+		\State $J_0\gets J_0\cup J$;
+		\State Comps $\gets$ \Call{AddNewComp}{Params, J};
+		\EndIf
+		\Until{($J^{(n+1)}\setminus J_0 \neq \emptyset$)}
+		\State \Return Comps;
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+Предполагается, что данный алгоритм применяется для компонент с положительными весами (нулевые значения соответствуют случаю уменьшению их числа на каком-либо шаге). Кроме того, для всех допустимых значений $i\neq j$ и $n$ должны существовать такие $\delta_a>0$ и $\delta_\sigma>0$, что выполнено хотя бы одно из условий $\left|a_i^{(n)}-a_j^{(n)}\right|>\delta_a$, $\left|\sigma_i^{(n)}-\sigma_j^{(n)}\right|>\delta_\sigma$. Если же они оба нарушены, то необходимо объединять эти компоненты в одну с соответствующей корректировкой (суммированием) весов. То есть предполагается, что все компоненты различны, -- это гарантирует корректность применения жадного алгоритма.
+
+Алгоритм~\ref{AlgGreedy} используется в качестве важной составной части  метода формирования матрицы связности. Она представляет собой вспомогательную структуру, в которую на каждом шаге скользящего окна сохраняется актуальное состояние всех выделенных к текущему моменту компонент. Сначала ко всему ряду применяется метод EM-типа для определения числа компонент на каждом шаге (как было отмечено выше, оно не может убывать). Затем в двухмерном пространстве $(a, \boldsymbol \sigma)$ используется один из методов кластеризации с полученным жадным алгоритмом числом локальных компонент-кластеров. Веса не учитываются, так как вклад компоненты в смесь может изменяться, при этом параметры -- математическое ожидание и дисперсия -- варьируются не слишком сильно и тогда считается, что это та же самая компонента. Соответствующая процедура представлена в алгоритме~\ref{AlgConnect}.
+
+\begin{algorithm}[!h]
+	\caption{Определение компонент связности в СРС-методе}
+	\label{AlgConnect}
+	\begin{algorithmic}[1]
+		\Function {MSMComponents}{Data, options}
+		\State Params $\gets$\Call{EMs}{Data, options.EM}\Comment{{\em СРС-метод}}
+		\State \LongComment{{\em Инициализация числом ненулевых компонент на первом шаге}}
+		\State  Comps$^{(1)}$$\gets$Params.k$^{(1)}$;
+		\For{(n = 1:{length}(Params)-1)}
+		\State Comps$^{(n+1)}$ $\gets$ \Call{NumGreedy}{Params, $ I^{(n)}$, $J^{(n+1)}$};
+		\EndFor
+		\State \LongComment{{\em Метки для каждого набора параметров, кластеризация}}
+		\State Labels $\gets$ \Call{Clust}{Params, {max}(Comps), options.ClustAlg};
+		\State \LongComment{{\em Матрица связности для компонент СРС-метода}}
+		\State HistMatrConnect$\gets$ \Call{Сonnectivity}{Params, Labels};	
+		\State \Call{PlotComp}{HistMatrConnect};\Comment{{\em Визуализация результатов}}
+		\State \Return HistMatrConnect;
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+Очевидно, что данная процедура может быть использована и в случае смесей многомерных распределений. При этом в формулу оптимизации~\eqref{I} должны быть добавлены все параметры соответствующего распределения (с соответствующей модификацией условия~\eqref{Dist}), а затем может быть проведена кластеризация в пространстве переменных новой размерности.
+
 Программы были зарегистрированы TODO \cite{progbib3, progbib4, progbib5, progbib6}
 
 \section{Разложение Карунена-Лоэва}
